@@ -51,8 +51,11 @@ class YoutubeVideo(VideoInfo):
             logger.info(f"Video initialized: {self.title} (ID: {self.id})")
         ...
 
-    def save(self, path="./video.mp4"):
+    def save(self, path=None):
         logger.debug(f"Saving video from {self.href} to {path}")
+        if path is None:
+            video_id = self.href.split("v=")[1].split("&")[0] if "v=" in self.href else "id_not_localized.mp4" #https://www.youtube.com/watch?v=90VfjbQytJc
+            path = f"{video_id}.mp4"
         self.path = path
         ydl_opts = {
             'outtmpl': path,

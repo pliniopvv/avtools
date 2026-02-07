@@ -20,9 +20,10 @@ class Speech():
 
     def transcribe(self, model_name="turbo"):
         model =  whisper.load_model(model_name)
+        segs = []
         if self.cached is not None:
+            self.segment = segs
             lines = self.cached.strip().split('\n\n')
-            segs = []
             for line in lines:
                 if line.strip():
                     parts = line.split('\n', 2)
@@ -43,7 +44,8 @@ class Speech():
             writer.close()
             for s in result["segments"]:
                 segs.append(Segment(start=s["start"], end=s["end"], text=s["text"]))
-        self.segment = segs
+            self.segment = segs
+            return segs
 
     def segments(self):
         segs = []
@@ -60,10 +62,12 @@ class Speech():
                             segs.append(Segment(start=start, end=end, text=text))
                 self.segment = segs
                 return segs
+            else:
+                self.transcribe()
+                return self.segment
         else:
-            self.transcribe()
-        return self.segment
+            return self.segment
 
-    def __destroy__(self):
+    def close(self):
         if os.path.exists("cached.srt"):
             os.remove("cached.srt")
