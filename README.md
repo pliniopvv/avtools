@@ -1,3 +1,4 @@
+```powershell
 usage: avtools [-h] [-d DOWNLOAD] [-F FILE] [-al] [-o OUTPUT] [-v] [--cut CUT] [--effect] [--join JOIN]
                [--midnight MIDNIGHT]
 
@@ -20,3 +21,4 @@ options:
   --midnight MIDNIGHT   Aplica o efeito 'midnight' em um vídeo. Exemplo: --midnight "video_superior.mp4
                         video_inferior.mp4" (Em desenvolvimento)
 
+```
