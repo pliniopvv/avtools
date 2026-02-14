@@ -10,6 +10,7 @@ setup(
         "yt-dlp",
         "whisper",
         "av",
+        "moviepy==1.0.3"
     ],
     entry_points={
         "console_scripts": [
