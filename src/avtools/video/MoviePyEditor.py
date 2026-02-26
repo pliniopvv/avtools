@@ -1,9 +1,14 @@
 from moviepy.editor import VideoFileClip
 
+import os
 import logging
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+
+current_file = os.path.abspath(__file__)
+project_root = os.path.dirname(os.path.dirname(current_file))
+FONT_SOURCE = '../../src/assets/Bangers-Regular.ttf'
 
 class MoviePyEditor():
     def __init__(self, href: str) -> None:
@@ -31,7 +36,7 @@ class MoviePyEditor():
             txt_clips = []
             for legend in self.legends:
                 logger.debug(f"Adicionando legenda: {legend}")
-                txt_clip = TextClip(legend["text"], fontsize=100,color='yellow',stroke_color='black', stroke_width=2, font='src/assets/Bangers-Regular.ttf', size=(self.clip.w * 0.8, None), method='caption')
+                txt_clip = TextClip(legend["text"], fontsize=100,color='yellow',stroke_color='black', stroke_width=2, font=FONT_SOURCE, size=(self.clip.w * 0.8, None), method='caption')
                 txt_clip = txt_clip.set_position(("center","bottom")).set_duration(float(legend["end"]) - float(legend["start"])).set_start(float(legend["start"]))
                 txt_clips.append(txt_clip)
             logger.info(f"Combinando clipes de texto com o vídeo principal...")
