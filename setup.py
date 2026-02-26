@@ -8,7 +8,7 @@ setup(
     install_requires=[
         "requests",
         "yt-dlp",
-        "whisper",
+        "openai-whisper",
         "av",
         "moviepy==1.0.3",
         "typer",

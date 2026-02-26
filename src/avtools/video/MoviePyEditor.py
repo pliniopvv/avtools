@@ -8,7 +8,7 @@ logger.setLevel(logging.DEBUG)
 
 current_file = os.path.abspath(__file__)
 project_root = os.path.dirname(os.path.dirname(current_file))
-FONT_SOURCE = '../../src/assets/Bangers-Regular.ttf'
+FONT_SOURCE = os.path.join(project_root, '../assets/Bangers-Regular.ttf')
 
 class MoviePyEditor():
     def __init__(self, href: str) -> None:
@@ -30,6 +30,7 @@ class MoviePyEditor():
         })
 
     def save(self, path: str):
+        logger.debug(f"Diretório da fonte usada: {FONT_SOURCE}")
         logger.info(f"Salvando vídeo em {path}...")
         if len(self.legends) > 0:
             from moviepy.editor import TextClip, CompositeVideoClip
