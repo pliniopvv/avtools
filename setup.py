@@ -11,7 +11,8 @@ setup(
         "whisper",
         "av",
         "moviepy==1.0.3",
-        "typer"
+        "typer",
+        "youtube-upload @ git+https://github.com/tokland/youtube-upload.git"
     ],
     entry_points={
         "console_scripts": [

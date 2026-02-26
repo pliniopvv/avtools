@@ -1,49 +1,39 @@
+import os
 import sys
-from youtube_upload import client
-import typer
+from youtube_upload import main
 
-app = typer.Typer()
+def upload_video_to_youtube(
+    video_path,
+    title,
+    description,
+    category="Education",
+    privacy="public",
+    client_secrets=os.path.expanduser("~/.client_secrets.json"),
+    credentials_file=os.path.expanduser("~/.youtube-upload-credentials.json")
+):
+    """
+    Faz upload de um vídeo para o YouTube usando o projeto youtube-upload.
+    """
 
-@app.command()
-def realizar_upload():
-    # Validação básica de argumentos
-    if len(sys.argv) < 3:
-        print("Uso: python app.py <caminho_video> <titulo> <descricao...>")
-        sys.exit(1)
+    # Monta os argumentos como se fossem passados pela linha de comando
+    args = [
+        "--title", title,
+        "--description", description,
+        "--category", category,
+        "--privacy", privacy,
+        "--client-secrets", client_secrets,
+        "--credentials-file", credentials_file,
+        video_path,
+    ]
 
-    # Captura dos argumentos
-    video_path = sys.argv[1]
-    video_title = sys.argv[2]
-    video_description = " ".join(sys.argv[3:])
+    # Executa o upload usando a função principal do youtube-upload
+    sys.argv = ["youtube-upload"] + args
+    main.run()
 
-    # Configurações de autenticação
-    client_secrets = "./client_secret_2.json"
-    credentials_file = "./youtube-upload-credentials-pvpvv34.json"
-
-    try:
-        print(f"Iniciando upload para o YouTube: {video_title}...")
-
-        # 1. Autenticação
-        # O youtube-upload gerencia o fluxo de OAuth2 através destas funções:
-        youtube = client.get_youtube_handler(client_secrets, credentials_file)
-
-        # 2. Execução do Upload
-        # Definimos os metadados do vídeo
-        options = {
-            "title": video_title,
-            "description": video_description,
-            "category": "Education", # Você pode mudar a categoria aqui
-            "privacyStatus": "unlisted" # 'public', 'private' ou 'unlisted'
-        }
-
-        # Chama a função de upload da biblioteca
-        video_id = client.upload(youtube, video_path, options)
-
-        print(f"Sucesso! Vídeo enviado com ID: {video_id}")
-        print(f"Link: https://www.youtube.com/watch?v={video_id}")
-
-    except Exception as e:
-        print(f"Ocorreu um erro durante o processo: {e}")
-
-if __name__ == "__main__":
-    realizar_upload()
+# upload_video_to_youtube(
+#     video_path="/home/gangss/Downloads/videos/cutted/video_cut.mp4",
+#     title="Meu vídeo de teste",
+#     description="Descrição do vídeo",
+#     category="Education",
+#     privacy="public"
+# )
