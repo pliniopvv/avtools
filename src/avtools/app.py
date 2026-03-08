@@ -27,7 +27,9 @@ def cut(file: str, start:str, end:str, output: str = typer.Option("cutted/video_
     editor = MoviePyEditor(file)
     # cut_params = dict(param.split("=") for param in cut.split())
     editor.cut(start=start, end=end)
-    os.makedirs(os.path.dirname(output), exist_ok=True)
+    output_dir = os.path.dirname(output)
+    if output_dir and not os.path.exists(output_dir):
+        os.makedirs(output_dir, exist_ok=True)
     editor.save(path=output)
 
 
