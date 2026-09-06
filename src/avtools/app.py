@@ -4,6 +4,8 @@ import typer
 
 from pathlib import Path
 from moviepy.editor import VideoFileClip
+from PIL import Image
+from datetime import datetime
 
 from .text import Speech
 from .video import MoviePyEditor, YoutubeVideo, YoutubeUpload
@@ -94,6 +96,44 @@ def upload(
         credentials_file=credentials_file
     )
     logging.info("Upload realizado com sucesso!")
+
+@app.command()
+def extract_frames(
+    video: str,
+    frame_time: str,
+    timestamp: str = typer.Option("timestamp","-ts","--timestamp"),
+    only_first: bool = typer.Option(True, "--first/--all")
+):
+#    t = datetime.strptime(frame_time, "%H:%M:%S")
+#    total_seconds = t.hour * 3600 + t.minute * 60 + t.seconds 
+    partes = list(map(float, frame_time.split(":")))
+    if len(partes) == 3:
+        h, m, s = partes
+    elif len(partes) == 2:
+        h, m, s = 0, partes[0], partes[1]
+    else:
+        raise ValueError("Formato de horário inválido!")
+    total_seconds = h * 3600 + m * 60 + s
+    
+    clip = VideoFileClip(video)
+
+    if not os.path.exists("cutted"):
+        os.makedirs("cutted")
+
+    if only_first:
+        frame = clip.get_frame(total_seconds)
+        image = Image.fromarray(frame)
+        name = f"cutted/{timestamp}_{0}.jpg"
+        image.save(name)
+    else:
+        fps = clip.fps
+        time_per_frame = 1/fps
+        atual_frame = total_seconds
+        subclip = clip.subclip(total_seconds, total_seconds+1)
+        for i, frame in enumerate(subclip.iter_frames(fps=fps)):
+           image = Image.fromarray(frame)
+           name = f"cutted/{timestamp}_{i}.jpg"
+           image.save(name)
 
 main = app
 if __name__ == "__main__":
