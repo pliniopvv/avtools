@@ -6,6 +6,7 @@ from pathlib import Path
 from moviepy.editor import VideoFileClip
 from PIL import Image
 from datetime import datetime
+from rembg import remove as bg_remove
 
 from .text import Speech
 from .video import MoviePyEditor, YoutubeVideo, YoutubeUpload
@@ -102,7 +103,8 @@ def extract_frames(
     video: str,
     frame_time: str,
     timestamp: str = typer.Option("timestamp","-ts","--timestamp"),
-    only_first: bool = typer.Option(True, "--first/--all")
+    only_first: bool = typer.Option(True, "--first/--all"),
+    remove_bg: bool = typer.Option(True, "--background/--no-background")
 ):
 #    t = datetime.strptime(frame_time, "%H:%M:%S")
 #    total_seconds = t.hour * 3600 + t.minute * 60 + t.seconds 
@@ -120,11 +122,18 @@ def extract_frames(
     if not os.path.exists("cutted"):
         os.makedirs("cutted")
 
+    def save_image(image, output):
+       if remove_bg:
+           image.save(output)
+       else:
+            o = bg_remove(image)
+            o.save(output)
+
     if only_first:
         frame = clip.get_frame(total_seconds)
         image = Image.fromarray(frame)
-        name = f"cutted/{timestamp}_{0}.jpg"
-        image.save(name)
+        name = f"cutted/{timestamp}_{0}.png"
+        save_image(image, name)
     else:
         fps = clip.fps
         time_per_frame = 1/fps
@@ -132,8 +141,8 @@ def extract_frames(
         subclip = clip.subclip(total_seconds, total_seconds+1)
         for i, frame in enumerate(subclip.iter_frames(fps=fps)):
            image = Image.fromarray(frame)
-           name = f"cutted/{timestamp}_{i}.jpg"
-           image.save(name)
+           name = f"cutted/{timestamp}_{i}.png"
+           save_image(image, name)
 
 main = app
 if __name__ == "__main__":

@@ -12,6 +12,7 @@ setup(
         "av",
         "moviepy==1.0.3",
         "typer",
+        "rembg",
         "youtube-upload @ git+https://github.com/tokland/youtube-upload.git"
     ],
     entry_points={
